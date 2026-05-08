@@ -1,0 +1,820 @@
+[
+  {
+    "day": "Day 1",
+    "input_context": {
+      "user_traits": {
+        "age_years": 45,
+        "sex": "male",
+        "bmi": 28,
+        "occupation_stress_level": "high",
+        "bp_phenotype_hint": "possible_non_dipper_pattern"
+      },
+      "medical_history": {
+        "hypertension": {
+          "stage": "stage_1",
+          "comorbidities": [],
+          "medications": [
+            {
+              "name": "enalapril",
+              "adherence_self_report": "consistent"
+            }
+          ]
+        },
+        "notes": "No diabetes, CKD, or CAD documented in long-term profile."
+      },
+      "sensor_data_short_term": {
+        "time_window": "past_24h",
+        "sleep": {
+          "total_sleep_hours": 7.2,
+          "sleep_efficiency_pct": 86,
+          "awakenings_count": 2
+        },
+        "activity": {
+          "steps": 8200,
+          "sedentary_hours": null
+        },
+        "vitals_summary": {
+          "resting_hr_bpm_day_mean": null,
+          "resting_hr_bpm_night_mean": 58,
+          "bp_readings_mmhg": [
+            {
+              "time": "morning",
+              "sbp": 124,
+              "dbp": 79,
+              "context": "after_wake_15min"
+            },
+            {
+              "time": "evening",
+              "sbp": 122,
+              "dbp": 78,
+              "context": "before_sleep"
+            }
+          ],
+          "hrv_rmssd_ms_evening": 42
+        },
+        "subjective": {
+          "stress_self_rating_0_to_10": 5,
+          "caffeine_cups": 2
+        },
+        "missing_indicators": {
+          "activity_sedentary_hours_is_missing": 1,
+          "activity_steps_is_missing": 0,
+          "sleep_awakenings_count_is_missing": 0,
+          "sleep_sleep_efficiency_pct_is_missing": 0,
+          "sleep_total_sleep_hours_is_missing": 0,
+          "subjective_caffeine_cups_is_missing": 0,
+          "subjective_stress_self_rating_0_to_10_is_missing": 0,
+          "vitals_summary_bp_readings_mmhg_0_dbp_is_missing": 0,
+          "vitals_summary_bp_readings_mmhg_0_sbp_is_missing": 0,
+          "vitals_summary_bp_readings_mmhg_1_dbp_is_missing": 0,
+          "vitals_summary_bp_readings_mmhg_1_sbp_is_missing": 0,
+          "vitals_summary_hrv_rmssd_ms_evening_is_missing": 0,
+          "vitals_summary_resting_hr_bpm_day_mean_is_missing": 1,
+          "vitals_summary_resting_hr_bpm_night_mean_is_missing": 0
+        }
+      }
+    },
+    "expected_ai_output": "综合长时与近24小时数据：血压整体处于轻度高血压用药控制下的平稳区间，昼夜静息心率分化良好，睡眠时长与效率正常。建议维持规律作息与适度活动；工作压力偏高时可优先保证睡眠与间断起身活动，并继续规范服用依那普利。"
+  },
+  {
+    "day": "Day 2",
+    "input_context": {
+      "user_traits": {
+        "age_years": 45,
+        "sex": "male",
+        "bmi": 28,
+        "occupation_stress_level": "high",
+        "bp_phenotype_hint": "possible_non_dipper_pattern"
+      },
+      "medical_history": {
+        "hypertension": {
+          "stage": "stage_1",
+          "comorbidities": [],
+          "medications": [
+            {
+              "name": "enalapril",
+              "adherence_self_report": "consistent"
+            }
+          ]
+        },
+        "notes": "No diabetes, CKD, or CAD documented in long-term profile."
+      },
+      "sensor_data_short_term": {
+        "time_window": "past_24h",
+        "sleep": {
+          "total_sleep_hours": 7.0,
+          "sleep_efficiency_pct": 84,
+          "awakenings_count": null
+        },
+        "activity": {
+          "steps": 7900,
+          "sedentary_hours": 8.4
+        },
+        "vitals_summary": {
+          "resting_hr_bpm_day_mean": null,
+          "resting_hr_bpm_night_mean": 59,
+          "bp_readings_mmhg": [
+            {
+              "time": "morning",
+              "sbp": 126,
+              "dbp": 80,
+              "context": "after_wake_15min"
+            },
+            {
+              "time": "evening",
+              "sbp": 123,
+              "dbp": 79,
+              "context": "before_sleep"
+            }
+          ],
+          "hrv_rmssd_ms_evening": 40
+        },
+        "subjective": {
+          "stress_self_rating_0_to_10": 6,
+          "caffeine_cups": 2
+        },
+        "missing_indicators": {
+          "activity_sedentary_hours_is_missing": 0,
+          "activity_steps_is_missing": 0,
+          "sleep_awakenings_count_is_missing": 1,
+          "sleep_sleep_efficiency_pct_is_missing": 0,
+          "sleep_total_sleep_hours_is_missing": 0,
+          "subjective_caffeine_cups_is_missing": 0,
+          "subjective_stress_self_rating_0_to_10_is_missing": 0,
+          "vitals_summary_bp_readings_mmhg_0_dbp_is_missing": 0,
+          "vitals_summary_bp_readings_mmhg_0_sbp_is_missing": 0,
+          "vitals_summary_bp_readings_mmhg_1_dbp_is_missing": 0,
+          "vitals_summary_bp_readings_mmhg_1_sbp_is_missing": 0,
+          "vitals_summary_hrv_rmssd_ms_evening_is_missing": 0,
+          "vitals_summary_resting_hr_bpm_day_mean_is_missing": 1,
+          "vitals_summary_resting_hr_bpm_night_mean_is_missing": 0
+        }
+      }
+    },
+    "expected_ai_output": "近24小时血压仍接近个体基线，夜间静息心率不高，提示交感兴奋未明显加重。睡眠略浅但总量尚可。建议继续监测清晨血压；在工作压力下优先固定就寝时间，并控制晚间刺激性饮品摄入。"
+  },
+  {
+    "day": "Day 3",
+    "input_context": {
+      "user_traits": {
+        "age_years": 45,
+        "sex": "male",
+        "bmi": 28,
+        "occupation_stress_level": "high",
+        "bp_phenotype_hint": "possible_non_dipper_pattern"
+      },
+      "medical_history": {
+        "hypertension": {
+          "stage": "stage_1",
+          "comorbidities": [],
+          "medications": [
+            {
+              "name": "enalapril",
+              "adherence_self_report": "consistent"
+            }
+          ]
+        },
+        "notes": "No diabetes, CKD, or CAD documented in long-term profile."
+      },
+      "sensor_data_short_term": {
+        "time_window": "past_24h",
+        "sleep": {
+          "total_sleep_hours": 7.4,
+          "sleep_efficiency_pct": 87,
+          "awakenings_count": 2
+        },
+        "activity": {
+          "steps": 8500,
+          "sedentary_hours": 7.8
+        },
+        "vitals_summary": {
+          "resting_hr_bpm_day_mean": null,
+          "resting_hr_bpm_night_mean": 57,
+          "bp_readings_mmhg": [
+            {
+              "time": "morning",
+              "sbp": null,
+              "dbp": null,
+              "context": "after_wake_15min"
+            },
+            {
+              "time": "evening",
+              "sbp": 121,
+              "dbp": 77,
+              "context": "before_sleep"
+            }
+          ],
+          "hrv_rmssd_ms_evening": 43
+        },
+        "subjective": {
+          "stress_self_rating_0_to_10": 5,
+          "caffeine_cups": 2
+        },
+        "missing_indicators": {
+          "activity_sedentary_hours_is_missing": 0,
+          "activity_steps_is_missing": 0,
+          "sleep_awakenings_count_is_missing": 0,
+          "sleep_sleep_efficiency_pct_is_missing": 0,
+          "sleep_total_sleep_hours_is_missing": 0,
+          "subjective_caffeine_cups_is_missing": 0,
+          "subjective_stress_self_rating_0_to_10_is_missing": 0,
+          "vitals_summary_bp_readings_mmhg_0_dbp_is_missing": 1,
+          "vitals_summary_bp_readings_mmhg_0_sbp_is_missing": 1,
+          "vitals_summary_bp_readings_mmhg_1_dbp_is_missing": 0,
+          "vitals_summary_bp_readings_mmhg_1_sbp_is_missing": 0,
+          "vitals_summary_hrv_rmssd_ms_evening_is_missing": 0,
+          "vitals_summary_resting_hr_bpm_day_mean_is_missing": 1,
+          "vitals_summary_resting_hr_bpm_night_mean_is_missing": 0
+        }
+      }
+    },
+    "expected_ai_output": "数据提示当前仍处于相对稳定期：活动量充足、久坐时间可控，血压读数与前几日一致。对“非勺型/压力相关”风险，建议把监测重点放在项目高压期的睡眠与清晨血压；若无症状恶化，以生活方式强化为主，并遵医嘱复诊评估用药方案是否需调整。"
+  },
+  {
+    "day": "Day 4",
+    "input_context": {
+      "user_traits": {
+        "age_years": 45,
+        "sex": "male",
+        "bmi": 28,
+        "occupation_stress_level": "very_high",
+        "bp_phenotype_hint": "possible_non_dipper_pattern"
+      },
+      "medical_history": {
+        "hypertension": {
+          "stage": "stage_1",
+          "comorbidities": [],
+          "medications": [
+            {
+              "name": "enalapril",
+              "adherence_self_report": "consistent"
+            }
+          ]
+        },
+        "notes": "No diabetes, CKD, or CAD documented in long-term profile."
+      },
+      "sensor_data_short_term": {
+        "time_window": "past_24h",
+        "sleep": {
+          "total_sleep_hours": null,
+          "sleep_efficiency_pct": null,
+          "awakenings_count": 6
+        },
+        "activity": {
+          "steps": 5200,
+          "sedentary_hours": null
+        },
+        "vitals_summary": {
+          "resting_hr_bpm_day_mean": 78,
+          "resting_hr_bpm_night_mean": 68,
+          "bp_readings_mmhg": [
+            {
+              "time": "morning",
+              "sbp": null,
+              "dbp": 86,
+              "context": "after_wake_15min"
+            },
+            {
+              "time": "evening",
+              "sbp": 128,
+              "dbp": 84,
+              "context": "before_sleep"
+            }
+          ],
+          "hrv_rmssd_ms_evening": 31
+        },
+        "subjective": {
+          "stress_self_rating_0_to_10": 8,
+          "caffeine_cups": null,
+          "work_context": "project_launch_week"
+        },
+        "missing_indicators": {
+          "activity_sedentary_hours_is_missing": 1,
+          "activity_steps_is_missing": 0,
+          "sleep_awakenings_count_is_missing": 0,
+          "sleep_sleep_efficiency_pct_is_missing": 1,
+          "sleep_total_sleep_hours_is_missing": 1,
+          "subjective_caffeine_cups_is_missing": 1,
+          "subjective_stress_self_rating_0_to_10_is_missing": 0,
+          "vitals_summary_bp_readings_mmhg_0_dbp_is_missing": 0,
+          "vitals_summary_bp_readings_mmhg_0_sbp_is_missing": 1,
+          "vitals_summary_bp_readings_mmhg_1_dbp_is_missing": 0,
+          "vitals_summary_bp_readings_mmhg_1_sbp_is_missing": 0,
+          "vitals_summary_hrv_rmssd_ms_evening_is_missing": 0,
+          "vitals_summary_resting_hr_bpm_day_mean_is_missing": 0,
+          "vitals_summary_resting_hr_bpm_night_mean_is_missing": 0
+        }
+      }
+    },
+    "expected_ai_output": "近24小时出现典型“高压工作负荷”信号：睡眠总量明显下降、夜间静息心率升高（提示交感张力上升），久坐时间延长。血压较前抬升，清晨读数更接近/进入需重点关注区间。归因上，优先考虑睡眠不足与慢性压力叠加导致的血压波动，而非单纯药物失效。建议立刻压缩晚间屏幕与加班、补觉优先；若连续清晨收缩压≥135或出现头痛胸闷等，应及时就医评估。"
+  },
+  {
+    "day": "Day 5",
+    "input_context": {
+      "user_traits": {
+        "age_years": 45,
+        "sex": "male",
+        "bmi": 28,
+        "occupation_stress_level": "very_high",
+        "bp_phenotype_hint": "possible_non_dipper_pattern"
+      },
+      "medical_history": {
+        "hypertension": {
+          "stage": "stage_1",
+          "comorbidities": [],
+          "medications": [
+            {
+              "name": "enalapril",
+              "adherence_self_report": "consistent"
+            }
+          ]
+        },
+        "notes": "No diabetes, CKD, or CAD documented in long-term profile."
+      },
+      "sensor_data_short_term": {
+        "time_window": "past_24h",
+        "sleep": {
+          "total_sleep_hours": 5.0,
+          "sleep_efficiency_pct": 70,
+          "awakenings_count": 7
+        },
+        "activity": {
+          "steps": 4800,
+          "sedentary_hours": 11.8
+        },
+        "vitals_summary": {
+          "resting_hr_bpm_day_mean": 80,
+          "resting_hr_bpm_night_mean": 70,
+          "bp_readings_mmhg": [
+            {
+              "time": "morning",
+              "sbp": null,
+              "dbp": 88,
+              "context": "after_wake_15min"
+            },
+            {
+              "time": "evening",
+              "sbp": 130,
+              "dbp": 85,
+              "context": "before_sleep"
+            }
+          ],
+          "hrv_rmssd_ms_evening": 28
+        },
+        "subjective": {
+          "stress_self_rating_0_to_10": 9,
+          "caffeine_cups": null,
+          "work_context": "project_launch_week"
+        },
+        "missing_indicators": {
+          "activity_sedentary_hours_is_missing": 0,
+          "activity_steps_is_missing": 0,
+          "sleep_awakenings_count_is_missing": 0,
+          "sleep_sleep_efficiency_pct_is_missing": 0,
+          "sleep_total_sleep_hours_is_missing": 0,
+          "subjective_caffeine_cups_is_missing": 1,
+          "subjective_stress_self_rating_0_to_10_is_missing": 0,
+          "vitals_summary_bp_readings_mmhg_0_dbp_is_missing": 0,
+          "vitals_summary_bp_readings_mmhg_0_sbp_is_missing": 1,
+          "vitals_summary_bp_readings_mmhg_1_dbp_is_missing": 0,
+          "vitals_summary_bp_readings_mmhg_1_sbp_is_missing": 0,
+          "vitals_summary_hrv_rmssd_ms_evening_is_missing": 0,
+          "vitals_summary_resting_hr_bpm_day_mean_is_missing": 0,
+          "vitals_summary_resting_hr_bpm_night_mean_is_missing": 0
+        }
+      }
+    },
+    "expected_ai_output": "趋势较昨日进一步恶化：睡眠仍约5小时且碎片化，夜间心率持续偏高，清晨血压达到135/88，符合“晨间高血压初显”的模式。机制上更符合压力—交感激活—血管张力增加与睡眠债共同作用。建议当日安排强制休息窗口、减少咖啡因，并增加短时步行打断久坐；同时建议在医疗场景下进行规范的家庭血压监测（连续多日清晨+睡前）。若症状出现或血压继续上升，需尽快临床随访。"
+  },
+  {
+    "day": "Day 6",
+    "input_context": {
+      "user_traits": {
+        "age_years": 45,
+        "sex": "male",
+        "bmi": 28,
+        "occupation_stress_level": "very_high",
+        "bp_phenotype_hint": "possible_non_dipper_pattern"
+      },
+      "medical_history": {
+        "hypertension": {
+          "stage": "stage_1",
+          "comorbidities": [],
+          "medications": [
+            {
+              "name": "enalapril",
+              "adherence_self_report": "consistent"
+            }
+          ]
+        },
+        "notes": "No diabetes, CKD, or CAD documented in long-term profile."
+      },
+      "sensor_data_short_term": {
+        "time_window": "past_24h",
+        "environment": {
+          "ambient_temperature_drop_celsius_vs_baseline": -8,
+          "weather_note": "sharp_cold_wave"
+        },
+        "sleep": {
+          "total_sleep_hours": 3.2,
+          "sleep_efficiency_pct": 55,
+          "awakenings_count": 9,
+          "severe_sleep_deprivation_flag": true
+        },
+        "activity": {
+          "steps": 4100,
+          "sedentary_hours": null
+        },
+        "vitals_summary": {
+          "resting_hr_bpm_day_mean": 86,
+          "resting_hr_bpm_night_mean": null,
+          "bp_readings_mmhg": [
+            {
+              "time": "morning",
+              "sbp": null,
+              "dbp": 95,
+              "context": "after_wake_15min"
+            },
+            {
+              "time": "midday",
+              "sbp": 142,
+              "dbp": 90,
+              "context": "post_stress_meeting"
+            },
+            {
+              "time": "evening",
+              "sbp": 138,
+              "dbp": 88,
+              "context": "before_sleep"
+            }
+          ],
+          "hrv_rmssd_ms_evening": 22
+        },
+        "subjective": {
+          "stress_self_rating_0_to_10": 9,
+          "caffeine_cups": 5,
+          "symptoms_self_report": [
+            "head_tension",
+            "fatigue"
+          ]
+        },
+        "missing_indicators": {
+          "activity_sedentary_hours_is_missing": 1,
+          "activity_steps_is_missing": 0,
+          "sleep_awakenings_count_is_missing": 0,
+          "sleep_sleep_efficiency_pct_is_missing": 0,
+          "sleep_total_sleep_hours_is_missing": 0,
+          "subjective_caffeine_cups_is_missing": 0,
+          "subjective_stress_self_rating_0_to_10_is_missing": 0,
+          "vitals_summary_bp_readings_mmhg_0_dbp_is_missing": 0,
+          "vitals_summary_bp_readings_mmhg_0_sbp_is_missing": 1,
+          "vitals_summary_bp_readings_mmhg_1_dbp_is_missing": 0,
+          "vitals_summary_bp_readings_mmhg_1_sbp_is_missing": 0,
+          "vitals_summary_hrv_rmssd_ms_evening_is_missing": 0,
+          "vitals_summary_resting_hr_bpm_day_mean_is_missing": 0,
+          "vitals_summary_resting_hr_bpm_night_mean_is_missing": 1
+        }
+      }
+    },
+    "expected_ai_output": "【高风险波动】清晨血压显著升高至152/95，且近24小时存在严重睡眠剥夺、夜间心率进一步抬升，并叠加气温骤降的冷刺激因素。归因排序：①急性睡眠债与交感过度激活；②寒冷诱发血管收缩与外周阻力上升；③持续高压工作与咖啡因摄入的叠加。建议立即休息、保暖、补液适量、避免剧烈用力；若出现胸痛、明显呼吸困难、视物模糊、神经功能异常或血压持续≥180/120，应按急诊路径处理。否则应在24–48小时内联系临床医生复评血压与用药，并启动连续家庭血压记录。"
+  },
+  {
+    "day": "Day 7",
+    "input_context": {
+      "user_traits": {
+        "age_years": 45,
+        "sex": "male",
+        "bmi": 28,
+        "occupation_stress_level": "very_high",
+        "bp_phenotype_hint": "possible_non_dipper_pattern"
+      },
+      "medical_history": {
+        "hypertension": {
+          "stage": "stage_1",
+          "comorbidities": [],
+          "medications": [
+            {
+              "name": "enalapril",
+              "adherence_self_report": "consistent"
+            }
+          ]
+        },
+        "notes": "No diabetes, CKD, or CAD documented in long-term profile."
+      },
+      "sensor_data_short_term": {
+        "time_window": "past_24h",
+        "system_alerts": [
+          {
+            "alert_type": "morning_hypertension_surge",
+            "severity": "urgent",
+            "trigger_metrics": {
+              "morning_sbp_mmhg": 148,
+              "morning_dbp_mmhg": 93,
+              "delta_vs_user_baseline_sbp": 23
+            }
+          }
+        ],
+        "environment": {
+          "ambient_temperature_drop_celsius_vs_baseline": -6,
+          "weather_note": "cold_wave_continues"
+        },
+        "sleep": {
+          "total_sleep_hours": 4.5,
+          "sleep_efficiency_pct": 62,
+          "awakenings_count": 8,
+          "severe_sleep_deprivation_flag": false
+        },
+        "activity": {
+          "steps": 4500,
+          "sedentary_hours": 11.6
+        },
+        "vitals_summary": {
+          "resting_hr_bpm_day_mean": 83,
+          "resting_hr_bpm_night_mean": null,
+          "bp_readings_mmhg": [
+            {
+              "time": "morning",
+              "sbp": 148,
+              "dbp": 93,
+              "context": "after_wake_15min"
+            },
+            {
+              "time": "evening",
+              "sbp": null,
+              "dbp": 86,
+              "context": "before_sleep"
+            }
+          ],
+          "hrv_rmssd_ms_evening": 25
+        },
+        "subjective": {
+          "stress_self_rating_0_to_10": 8,
+          "caffeine_cups": 4
+        },
+        "missing_indicators": {
+          "activity_sedentary_hours_is_missing": 0,
+          "activity_steps_is_missing": 0,
+          "sleep_awakenings_count_is_missing": 0,
+          "sleep_sleep_efficiency_pct_is_missing": 0,
+          "sleep_total_sleep_hours_is_missing": 0,
+          "subjective_caffeine_cups_is_missing": 0,
+          "subjective_stress_self_rating_0_to_10_is_missing": 0,
+          "vitals_summary_bp_readings_mmhg_0_dbp_is_missing": 0,
+          "vitals_summary_bp_readings_mmhg_0_sbp_is_missing": 0,
+          "vitals_summary_bp_readings_mmhg_1_dbp_is_missing": 0,
+          "vitals_summary_bp_readings_mmhg_1_sbp_is_missing": 1,
+          "vitals_summary_hrv_rmssd_ms_evening_is_missing": 0,
+          "vitals_summary_resting_hr_bpm_day_mean_is_missing": 0,
+          "vitals_summary_resting_hr_bpm_night_mean_is_missing": 1
+        }
+      }
+    },
+    "expected_ai_output": "【系统预警：清晨高血压飙升】触发依据：清晨血压显著高于个体近周基线（约+20 mmHg量级），且与连续睡眠不足、夜间心率偏高、寒冷暴露及工作压力同向出现，符合“清晨交感神经激活+血管反应性增强”的综合机制。非勺型提示：夜间交感未充分回落时，清晨 surge 风险更高。立即行动：静坐复测（间隔5分钟两次）、保暖、当日减少咖啡因与高强度会议；安排补觉与轻度步行。医疗建议：若清晨反复≥140/90或出现靶器官相关症状，应尽快门诊调整降压方案（是否需联合用药/优化服药时间需医生判断）。本输出不构成个体化处方。"
+  },
+  {
+    "day": "Day 8",
+    "input_context": {
+      "user_traits": {
+        "age_years": 45,
+        "sex": "male",
+        "bmi": 28,
+        "occupation_stress_level": "high",
+        "bp_phenotype_hint": "possible_non_dipper_pattern"
+      },
+      "medical_history": {
+        "hypertension": {
+          "stage": "stage_1",
+          "comorbidities": [],
+          "medications": [
+            {
+              "name": "enalapril",
+              "adherence_self_report": "consistent"
+            }
+          ]
+        },
+        "notes": "No diabetes, CKD, or CAD documented in long-term profile."
+      },
+      "sensor_data_short_term": {
+        "time_window": "past_24h",
+        "behavior_change": {
+          "followed_system_advice": true,
+          "extra_rest_blocks_min": 90,
+          "caffeine_reduction": true
+        },
+        "sleep": {
+          "total_sleep_hours": 6.4,
+          "sleep_efficiency_pct": 78,
+          "awakenings_count": 4
+        },
+        "activity": {
+          "steps": 6800,
+          "sedentary_hours": 9.2
+        },
+        "vitals_summary": {
+          "resting_hr_bpm_day_mean": 76,
+          "resting_hr_bpm_night_mean": null,
+          "bp_readings_mmhg": [
+            {
+              "time": "morning",
+              "sbp": 138,
+              "dbp": 89,
+              "context": "after_wake_15min"
+            },
+            {
+              "time": "evening",
+              "sbp": null,
+              "dbp": 82,
+              "context": "before_sleep"
+            }
+          ],
+          "hrv_rmssd_ms_evening": 33
+        },
+        "subjective": {
+          "stress_self_rating_0_to_10": 6,
+          "caffeine_cups": 2
+        },
+        "missing_indicators": {
+          "activity_sedentary_hours_is_missing": 0,
+          "activity_steps_is_missing": 0,
+          "sleep_awakenings_count_is_missing": 0,
+          "sleep_sleep_efficiency_pct_is_missing": 0,
+          "sleep_total_sleep_hours_is_missing": 0,
+          "subjective_caffeine_cups_is_missing": 0,
+          "subjective_stress_self_rating_0_to_10_is_missing": 0,
+          "vitals_summary_bp_readings_mmhg_0_dbp_is_missing": 0,
+          "vitals_summary_bp_readings_mmhg_0_sbp_is_missing": 0,
+          "vitals_summary_bp_readings_mmhg_1_dbp_is_missing": 0,
+          "vitals_summary_bp_readings_mmhg_1_sbp_is_missing": 1,
+          "vitals_summary_hrv_rmssd_ms_evening_is_missing": 0,
+          "vitals_summary_resting_hr_bpm_day_mean_is_missing": 0,
+          "vitals_summary_resting_hr_bpm_night_mean_is_missing": 1
+        }
+      }
+    },
+    "expected_ai_output": "干预响应良好：睡眠时长回升、夜间心率开始下降，清晨血压较峰值回落但仍偏高，提示仍处于恢复期。归因上，改善主要来自补觉、降低刺激物与打断久坐。建议继续执行“强制休息+规律就寝”，并维持清晨监测；若48–72小时内清晨血压仍反复>135/85，应安排医生随访评估。"
+  },
+  {
+    "day": "Day 9",
+    "input_context": {
+      "user_traits": {
+        "age_years": 45,
+        "sex": "male",
+        "bmi": 28,
+        "occupation_stress_level": "moderate_high",
+        "bp_phenotype_hint": "possible_non_dipper_pattern"
+      },
+      "medical_history": {
+        "hypertension": {
+          "stage": "stage_1",
+          "comorbidities": [],
+          "medications": [
+            {
+              "name": "enalapril",
+              "adherence_self_report": "consistent"
+            }
+          ]
+        },
+        "notes": "No diabetes, CKD, or CAD documented in long-term profile."
+      },
+      "sensor_data_short_term": {
+        "time_window": "past_24h",
+        "behavior_change": {
+          "followed_system_advice": true,
+          "extra_rest_blocks_min": 120,
+          "caffeine_reduction": true
+        },
+        "sleep": {
+          "total_sleep_hours": 7.0,
+          "sleep_efficiency_pct": 83,
+          "awakenings_count": 3
+        },
+        "activity": {
+          "steps": 7600,
+          "sedentary_hours": 8.5
+        },
+        "vitals_summary": {
+          "resting_hr_bpm_day_mean": 73,
+          "resting_hr_bpm_night_mean": null,
+          "bp_readings_mmhg": [
+            {
+              "time": "morning",
+              "sbp": 130,
+              "dbp": 84,
+              "context": "after_wake_15min"
+            },
+            {
+              "time": "evening",
+              "sbp": 124,
+              "dbp": 80,
+              "context": "before_sleep"
+            }
+          ],
+          "hrv_rmssd_ms_evening": 38
+        },
+        "subjective": {
+          "stress_self_rating_0_to_10": 5,
+          "caffeine_cups": 2
+        },
+        "missing_indicators": {
+          "activity_sedentary_hours_is_missing": 0,
+          "activity_steps_is_missing": 0,
+          "sleep_awakenings_count_is_missing": 0,
+          "sleep_sleep_efficiency_pct_is_missing": 0,
+          "sleep_total_sleep_hours_is_missing": 0,
+          "subjective_caffeine_cups_is_missing": 0,
+          "subjective_stress_self_rating_0_to_10_is_missing": 0,
+          "vitals_summary_bp_readings_mmhg_0_dbp_is_missing": 0,
+          "vitals_summary_bp_readings_mmhg_0_sbp_is_missing": 0,
+          "vitals_summary_bp_readings_mmhg_1_dbp_is_missing": 0,
+          "vitals_summary_bp_readings_mmhg_1_sbp_is_missing": 0,
+          "vitals_summary_hrv_rmssd_ms_evening_is_missing": 0,
+          "vitals_summary_resting_hr_bpm_day_mean_is_missing": 0,
+          "vitals_summary_resting_hr_bpm_night_mean_is_missing": 1
+        }
+      }
+    },
+    "expected_ai_output": "恢复趋势明确：睡眠接近基线，交感指标（夜间心率、日间均值心率）继续回落，血压向个体稳定区间靠近。说明前几日飙升主要由可逆因素（睡眠剥夺、压力、寒冷）驱动。建议把“项目期防护包”固化为习惯：最低睡眠阈值、咖啡因上限、久坐打断；并记录每周清晨血压均值供医生复盘。"
+  },
+  {
+    "day": "Day 10",
+    "input_context": {
+      "user_traits": {
+        "age_years": 45,
+        "sex": "male",
+        "bmi": 28,
+        "occupation_stress_level": "high",
+        "bp_phenotype_hint": "possible_non_dipper_pattern"
+      },
+      "medical_history": {
+        "hypertension": {
+          "stage": "stage_1",
+          "comorbidities": [],
+          "medications": [
+            {
+              "name": "enalapril",
+              "adherence_self_report": "consistent"
+            }
+          ]
+        },
+        "notes": "No diabetes, CKD, or CAD documented in long-term profile."
+      },
+      "sensor_data_short_term": {
+        "time_window": "past_24h",
+        "behavior_change": {
+          "followed_system_advice": true,
+          "extra_rest_blocks_min": 90,
+          "caffeine_reduction": true
+        },
+        "sleep": {
+          "total_sleep_hours": 7.3,
+          "sleep_efficiency_pct": 85,
+          "awakenings_count": 2
+        },
+        "activity": {
+          "steps": 8100,
+          "sedentary_hours": 8.0
+        },
+        "vitals_summary": {
+          "resting_hr_bpm_day_mean": 72,
+          "resting_hr_bpm_night_mean": 58,
+          "bp_readings_mmhg": [
+            {
+              "time": "morning",
+              "sbp": 126,
+              "dbp": 81,
+              "context": "after_wake_15min"
+            },
+            {
+              "time": "evening",
+              "sbp": 122,
+              "dbp": 78,
+              "context": "before_sleep"
+            }
+          ],
+          "hrv_rmssd_ms_evening": 41
+        },
+        "subjective": {
+          "stress_self_rating_0_to_10": 5,
+          "caffeine_cups": 2
+        },
+        "missing_indicators": {
+          "activity_sedentary_hours_is_missing": 0,
+          "activity_steps_is_missing": 0,
+          "sleep_awakenings_count_is_missing": 0,
+          "sleep_sleep_efficiency_pct_is_missing": 0,
+          "sleep_total_sleep_hours_is_missing": 0,
+          "subjective_caffeine_cups_is_missing": 0,
+          "subjective_stress_self_rating_0_to_10_is_missing": 0,
+          "vitals_summary_bp_readings_mmhg_0_dbp_is_missing": 0,
+          "vitals_summary_bp_readings_mmhg_0_sbp_is_missing": 0,
+          "vitals_summary_bp_readings_mmhg_1_dbp_is_missing": 0,
+          "vitals_summary_bp_readings_mmhg_1_sbp_is_missing": 0,
+          "vitals_summary_hrv_rmssd_ms_evening_is_missing": 0,
+          "vitals_summary_resting_hr_bpm_day_mean_is_missing": 0,
+          "vitals_summary_resting_hr_bpm_night_mean_is_missing": 0
+        }
+      }
+    },
+    "expected_ai_output": "整体回到剧本基线附近：清晨约126/81，昼夜心率分化恢复，睡眠与活动模式与第1–3天一致。总结归因链：压力与久坐→睡眠缩短与夜间交感偏高→清晨血压上升；寒冷与严重睡眠剥夺进一步放大波动；行为干预后指标可逆回落。后续建议：保留清晨血压周报规则与非勺型风险提示，但在稳定期以健康教育为主；任何新发持续升高或症状变化仍需临床评估。免责声明：本分析用于训练数据示例，不能替代医疗诊断。"
+  }
+]

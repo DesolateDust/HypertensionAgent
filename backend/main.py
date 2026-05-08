@@ -5,19 +5,27 @@ import requests
 import json
 import os
 from memmachine_client import MemMachineClient
+from typing import Optional
 
 app = FastAPI()
-app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 client = MemMachineClient(base_url="http://localhost:8080")
 
+pending_alerts = {}
 
 class SensorData(BaseModel):
     user_id: str
-    sleep_hours: float
-    awakenings: int
-    day_hr: int
-    night_hr: int
-    steps: int
+    sleep_hours: Optional[float] = None
+    awakenings: Optional[int] = None
+    day_hr: Optional[int] = None
+    night_hr: Optional[int] = None
+    steps: Optional[int] = None
     current_day: str
 
 
@@ -57,14 +65,21 @@ def sort_episodes_chronologically(episodes_list):
 def inject_and_analyze(data: SensorData):
     memory = get_user_memory(data.user_id)
 
-    # 规则引擎计算
-    hr_drop_pct = ((data.day_hr - data.night_hr) / data.day_hr) * 100 if data.day_hr > 0 else 0
-    is_non_dipper = hr_drop_pct < 20
+    # 【修复：安全的规则引擎计算】
+    is_non_dipper = False
+    if data.day_hr is not None and data.night_hr is not None and data.day_hr > 0:
+        hr_drop_pct = ((data.day_hr - data.night_hr) / data.day_hr) * 100
+        is_non_dipper = hr_drop_pct < 20
+        hr_desc = f"日间心率{data.day_hr}，夜间心率{data.night_hr}。"
+        if is_non_dipper:
+            hr_desc += f"夜间心率下降仅为{hr_drop_pct:.1f}%，呈高危非勺型特征！"
+    else:
+        hr_desc = "心率数据不完整，无法评估血压表型。"
 
-    # 注入数据，打上明确的时间标签
-    record = f"【{data.current_day}】睡眠{data.sleep_hours}小时，起夜{data.awakenings}次。日间心率{data.day_hr}，夜间心率{data.night_hr}。"
-    if is_non_dipper:
-        record += f"夜间心率下降不足20%，呈高危非勺型特征！"
+    sleep_desc = f"睡眠{data.sleep_hours}小时" if data.sleep_hours is not None else "睡眠时长未知"
+    awake_desc = f"起夜{data.awakenings}次" if data.awakenings is not None else "起夜次数未知"
+
+    record = f"【{data.current_day}】{sleep_desc}，{awake_desc}。{hr_desc}"
     memory.add(record)
 
     # 检索并强制排序
@@ -98,9 +113,16 @@ def inject_and_analyze(data: SensorData):
 
     resp = requests.post("http://localhost:11434/api/generate",
                          json={"model": "qwen2.5:7b", "prompt": prompt, "stream": False})
-    return {"status": "success",
-            "ai_alert": resp.json().get('response') if resp.status_code == 200 else "大模型连接失败"}
+    # return {"status": "success","ai_alert": resp.json().get('response') if resp.status_code == 200 else "大模型连接失败"}
+    ai_reply = resp.json().get('response') if resp.status_code == 200 else "大模型连接失败"
+    pending_alerts[data.user_id] = ai_reply
+    return {"status": "success"}
 
+@app.get("/api/get_alert")
+def get_alert(user_id: str):
+    # 如果信箱里有这个用户的警报，就取出来并清空（防止重复发）
+    alert_msg = pending_alerts.pop(user_id, None)
+    return {"alert": alert_msg}
 
 @app.post("/api/chat")
 def chat(data: ChatData):

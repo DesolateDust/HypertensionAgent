@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>开发者控制台 - 传感器数据注入</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #2c3e50; color: white; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0;}
+        .dashboard { background: #34495e; padding: 30px; border-radius: 10px; width: 400px; box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
+        h2 { text-align: center; margin-top: 0; color: #ecf0f1; }
+        .group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-size: 14px; color: #bdc3c7;}
+        input, select { width: 100%; padding: 8px; border: none; border-radius: 5px; box-sizing: border-box; background: #ecf0f1; }
+        button { width: 100%; padding: 12px; background: #e74c3c; color: white; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; font-weight: bold; margin-top: 10px;}
+        button:hover { background: #c0392b; }
+        #log { margin-top: 15px; padding: 10px; background: #1abc9c; color: white; border-radius: 5px; display: none; font-size: 13px; text-align: center;}
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <h2>⚙️ 上帝模式：传感器模拟</h2>
+        <div class="group">
+            <label>目标端侧设备 (后台同步):</label>
+            <select id="userSelect"></select>
+        </div>
+        <div class="group"><label>当前模拟天数:</label><input type="text" id="day" value="Day 11"></div>
+        <div style="display:flex; gap: 10px;">
+            <div class="group"><label>睡眠(h)</label><input type="number" id="sleep" value="4.5" step="0.1"></div>
+            <div class="group"><label>起夜(次)</label><input type="number" id="awake" value="5"></div>
+        </div>
+        <div style="display:flex; gap: 10px;">
+            <div class="group"><label>日间心率</label><input type="number" id="dayHr" value="80"></div>
+            <div class="group"><label>夜间心率</label><input type="number" id="nightHr" value="78"></div>
+        </div>
+        <button id="btn" onclick="sendData()">⚠️ 注入数据并触发后压评估</button>
+        <div id="log">数据已注入，请观察 APP 端！</div>
+    </div>
+
+    <script>
+        // 【改动点：页面加载时获取用户列表】
+        window.onload = async function() {
+            try {
+                const res = await fetch("http://127.0.0.1:8000/api/users");
+                const data = await res.json();
+                const select = document.getElementById("userSelect");
+                data.users.forEach(user => {
+                    let option = document.createElement("option");
+                    option.value = user;
+                    option.innerText = user === "stress_non_dipper_10days_user" ? `⭐ [10天时序组] ${user}` : user;
+                    select.appendChild(option);
+                });
+            } catch (e) { alert("后台未启动！"); }
+        };
+
+        async function sendData() {
+            const btn = document.getElementById("btn");
+            const log = document.getElementById("log");
+            btn.innerText = "数据同步中..."; btn.disabled = true; log.style.display = "none";
+
+            const payload = {
+                user_id: document.getElementById("userSelect").value, // 取下拉菜单的值
+                current_day: document.getElementById("day").value,
+                sleep_hours: parseFloat(document.getElementById("sleep").value),
+                awakenings: parseInt(document.getElementById("awake").value),
+                day_hr: parseInt(document.getElementById("dayHr").value),
+                night_hr: parseInt(document.getElementById("nightHr").value),
+                steps: 4000
+            };
+
+            try {
+                await fetch("http://127.0.0.1:8000/api/inject_and_analyze", {
+                    method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload)
+                });
+                log.innerText = "✅ 数据成功注入后台！请查看 APP 预警！";
+            } catch (e) {
+                log.innerText = "❌ 后端连接失败";
+            } finally {
+                log.style.display = "block";
+                btn.innerText = "⚠️ 注入数据并触发后压评估";
+                btn.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>
