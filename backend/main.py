@@ -1,23 +1,19 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
+from typing import Optional
 import requests
 import json
-import os
+import re
 from memmachine_client import MemMachineClient
-from typing import Optional
+from cache_manager import load_cache, process_and_cache_sensor_data  # 引入模块
 
 app = FastAPI()
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
 client = MemMachineClient(base_url="http://localhost:8080")
 
 pending_alerts = {}
+
 
 class SensorData(BaseModel):
     user_id: str
@@ -39,90 +35,79 @@ def get_user_memory(user_id: str):
     return project.memory(group_id="default", agent_id="health_bot", user_id=user_id, session_id="live_session")
 
 
-# 【动态获取已注入的用户列表】
 @app.get("/api/users")
 def get_users():
-    users = set()
-    # 从本地数据集文件里提取用户列表，确保与后台一致
-    try:
-        with open("data/sft_dataset.json", "r", encoding="utf-8") as f:
-            for item in json.load(f):
-                if "user_id" in item: users.add(item["user_id"])
-    except:
-        pass
-    users.add("stress_non_dipper_10days_user")  # 那个10天数据集的专属用户
-    return {"users": list(users)}
+    cache = load_cache()
+    return {"users": list(cache.keys())}  # 直接从缓存读取已有用户
 
 
-# 【辅助函数：强制时间线排序】
-def sort_episodes_chronologically(episodes_list):
-    # 根据注入时的格式 [Day X] 或 [Latest] 强制排序
-    # 这里用一个简单的字符串排序，确保 Day 1 在前，Day 10 在后
-    return sorted(episodes_list, key=lambda x: x.content)
+@app.get("/api/get_alert")
+def get_alert(user_id: str):
+    return {"alert": pending_alerts.pop(user_id, None)}
 
 
 @app.post("/api/inject_and_analyze")
 def inject_and_analyze(data: SensorData):
-    memory = get_user_memory(data.user_id)
+    day_match = re.search(r'\d+', data.current_day)
+    day_num = int(day_match.group()) if day_match else 1
 
-    # 【修复：安全的规则引擎计算】
+    cache = load_cache()
+    user_cache = cache.get(data.user_id, {})
+    existing_days = sorted([int(k) for k in user_cache.keys()])
+    max_day = existing_days[-1] if existing_days else 0
+
+    if existing_days and day_num < max_day - 1:
+        return {"status": "error", "ai_alert": f"系统安全限制：不支持覆盖 Day {max_day - 1} 之前的历史传感器数据。"}
+
     is_non_dipper = False
     if data.day_hr is not None and data.night_hr is not None and data.day_hr > 0:
-        hr_drop_pct = ((data.day_hr - data.night_hr) / data.day_hr) * 100
-        is_non_dipper = hr_drop_pct < 20
-        hr_desc = f"日间心率{data.day_hr}，夜间心率{data.night_hr}。"
-        if is_non_dipper:
-            hr_desc += f"夜间心率下降仅为{hr_drop_pct:.1f}%，呈高危非勺型特征！"
+        hr_drop = ((data.day_hr - data.night_hr) / data.day_hr) * 100
+        is_non_dipper = hr_drop < 20
+        hr_desc = f"日间心率{data.day_hr}，夜间心率{data.night_hr}。" + (
+            f"夜间心率下降仅{hr_drop:.1f}%(非勺型危险)" if is_non_dipper else "")
     else:
-        hr_desc = "心率数据不完整，无法评估血压表型。"
+        hr_desc = "心率数据不完整。"
 
-    sleep_desc = f"睡眠{data.sleep_hours}小时" if data.sleep_hours is not None else "睡眠时长未知"
-    awake_desc = f"起夜{data.awakenings}次" if data.awakenings is not None else "起夜次数未知"
+    sleep_desc = f"睡眠{data.sleep_hours}h" if data.sleep_hours is not None else "睡眠未知"
+    awake_desc = f"起夜{data.awakenings}次" if data.awakenings is not None else "起夜未知"
 
-    record = f"【{data.current_day}】{sleep_desc}，{awake_desc}。{hr_desc}"
-    memory.add(record)
+    record = f"【Day {day_num}】{sleep_desc}，{awake_desc}。{hr_desc}"
 
-    # 检索并强制排序
-    results = memory.search("检索我所有的历史体征数据、血压病史以及近期的心率表现。")
+    memory = get_user_memory(data.user_id)
+    # 【调用模块，处理溢出和归档】
+    system_log = process_and_cache_sensor_data(data.user_id, day_num, record, memory)
+
+    # 重新加载最新缓存
+    user_cache = load_cache().get(data.user_id, {})
+    results = memory.search("检索我的基础画像以及历史趋势总结")
+
     context = ""
     try:
         if results.content.semantic_memory:
-            context += "【长期病史】\n" + "\n".join([f"- {s}" for s in results.content.semantic_memory]) + "\n"
-
-        # 提取短期记忆并【强制时间序列排序】
-        if results.content.episodic_memory.short_term_memory.episodes:
-            sorted_stm = sort_episodes_chronologically(results.content.episodic_memory.short_term_memory.episodes)
-            context += "【按时间排序的历史体征】\n" + "\n".join([f"- {ep.content}" for ep in sorted_stm]) + "\n"
+            context += "【长期静态病史】\n" + "\n".join([f"- {s}" for s in results.content.semantic_memory]) + "\n"
+        if results.content.episodic_memory.long_term_memory.episodes:
+            context += "【历史压缩记忆(MemMachine LTM)】\n" + "\n".join(
+                [f"- {ep.content}" for ep in results.content.episodic_memory.long_term_memory.episodes[:3]]) + "\n"
     except:
         pass
 
-    prompt = f"""你是一个端侧高血压预警助手。请仔细阅读以下按时间排序的病历和体征数据。
-如果发现患者最近几天呈现“非勺型特征”或起夜频繁，必须结合长期病史发出严重警告。
+    context += "【最近 7 天精确体征(Hot Cache)】\n"
+    for d in sorted([int(k) for k in user_cache.keys()]):
+        context += f"- {user_cache[str(d)]['content']}\n"
 
-{context}
-请直接给出一段专业的预警和用药/生活建议："""
+    print(context)
+    print('\n')
 
-    # ==================== 调试代码 ======================
-    print("\n" + "=".rjust(60, "="))
-    print(f"🎯 [当前操作用户]: {data.user_id}")
-    print(f"📥 [实际检索到的记忆 Context]:\n{context}")
-    print("-" * 60)
-    print(f"🧠 [最终拼接好喂给 Qwen 的完整 Prompt]:\n{prompt}")
-    print("=".rjust(60, "=") + "\n")
-    # ==================================================
-
+    prompt = f"你是端侧预警助手。根据病史和体征，对今天(Day {day_num})的数据进行风险评估。出现危险请立刻警告(80字内)：\n{context}"
     resp = requests.post("http://localhost:11434/api/generate",
                          json={"model": "qwen2.5:7b", "prompt": prompt, "stream": False})
-    # return {"status": "success","ai_alert": resp.json().get('response') if resp.status_code == 200 else "大模型连接失败"}
-    ai_reply = resp.json().get('response') if resp.status_code == 200 else "大模型连接失败"
-    pending_alerts[data.user_id] = ai_reply
+
+    print(resp.json())
+    print('\n')
+
+    pending_alerts[data.user_id] = resp.json().get('response', "分析失败") + system_log
     return {"status": "success"}
 
-@app.get("/api/get_alert")
-def get_alert(user_id: str):
-    # 如果信箱里有这个用户的警报，就取出来并清空（防止重复发）
-    alert_msg = pending_alerts.pop(user_id, None)
-    return {"alert": alert_msg}
 
 @app.post("/api/chat")
 def chat(data: ChatData):
@@ -130,28 +115,38 @@ def chat(data: ChatData):
     results = memory.search(data.message)
     context = ""
     try:
+        # 【修复问题2：全面检索 Semantic + LTM + STM】
         if results.content.semantic_memory:
             context += "【病史】\n" + "\n".join([f"- {s}" for s in results.content.semantic_memory]) + "\n"
+        if results.content.episodic_memory.long_term_memory.episodes:
+            context += "【历史对话与总结】\n" + "\n".join(
+                [f"- {ep.content}" for ep in results.content.episodic_memory.long_term_memory.episodes[:3]]) + "\n"
         if results.content.episodic_memory.short_term_memory.episodes:
-            sorted_stm = sort_episodes_chronologically(results.content.episodic_memory.short_term_memory.episodes)
-            context += "【近期状态】\n" + "\n".join([f"- {ep.content}" for ep in sorted_stm]) + "\n"
+            context += "【近期对话】\n" + "\n".join(
+                [f"- {ep.content}" for ep in results.content.episodic_memory.short_term_memory.episodes]) + "\n"
     except:
         pass
 
-    prompt = f"你是医疗助手。请结合记忆回答。{context}\n\n问题：{data.message}\n回答："
+    cache = load_cache().get(data.user_id, {})
+    if cache:
+        context += "【最近传感器体征】\n"
+        for d in sorted([int(k) for k in cache.keys()]): context += f"- {cache[str(d)]['content']}\n"
 
-    # ==================== 调试代码 ======================
-    print("\n" + "=".rjust(60, "="))
-    print(f"🎯 [当前操作用户]: {data.user_id}")
-    print(f"📥 [实际检索到的记忆 Context]:\n{context}")
-    print("-" * 60)
-    print(f"🧠 [最终拼接好喂给 Qwen 的完整 Prompt]:\n{prompt}")
-    print("=".rjust(60, "=") + "\n")
-    # ==================================================
+    print(context)
+    print('\n')
 
+    prompt = f"你是医疗助手。请结合记忆回答。{context}\n\n用户提问：{data.message}\n回答："
     resp = requests.post("http://localhost:11434/api/generate",
                          json={"model": "qwen2.5:7b", "prompt": prompt, "stream": False})
-    return {"reply": resp.json().get('response') if resp.status_code == 200 else "失败"}
+    ai_reply = resp.json().get('response', "请求失败")
+
+    print(ai_reply)
+    print('\n')
+
+    # 【修复问题2核心：将真实对话存入 MemMachine，形成真正的记忆流闭环！】
+    memory.add(f"[用户咨询]：{data.message}\n[系统回复]：{ai_reply}")
+
+    return {"reply": ai_reply}
 
 
 if __name__ == "__main__":
